@@ -13,15 +13,26 @@ class NewsAdmin(admin.ModelAdmin):
                     'publish_date',
                     'edit_date',
                     'author',
-                    'hidden']
-    search_fields = ['title',
-                     'text',
-                     'author__username',
-                     'author__first_name',
-                     'author__last_name']
+                    'hidden',
+                    'tag_list']
     list_filter = ['publish_date',
                    'edit_date',
-                   'hidden']
+                   'hidden',
+                   'tags']
+    search_fields = ['title']
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('tags')
+    '''Получаем данные из связанной таблицы одним запросом
+    queryset - ленивый объект, он не отправит запрос в БД до тех пор,
+    пока мы не запросим конкретные данные. А значит мы можем продолжать с
+    ним работать без потерь в производительности (это мы использовали
+    в поиске и здесь, когда написали "prefetch_related", который
+    позволяет получить одним запросом данные из таблицы news и объединить
+    их с данными из связанной таблицы tags'''
+
+    def tag_list(self, obj):
+        return ', '.join(news.name for news in obj.tags.all())
 
     def get_search_results(self, request, queryset, search_term: str):
         if not search_term.strip():

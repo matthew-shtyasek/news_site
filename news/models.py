@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from taggit.managers import TaggableManager
 
 
 class News(models.Model):
@@ -15,9 +16,10 @@ class News(models.Model):
                                verbose_name='Автор')
     hidden = models.BooleanField(default=False,
                                  blank=False)
+    tags = TaggableManager()
 
     def __str__(self):
-        sliced_title = self.title[:30]
+        sliced_title = self.title[:30].rstrip()
         return sliced_title if len(sliced_title) == len(self.title)\
             else sliced_title + '...'
     '''
@@ -29,3 +31,7 @@ class News(models.Model):
         В противном случае, когда заголовок всё-таки сократили, 
         мы добавляем к нему многоточие (sliced_title + '...')
     '''
+
+    class Meta:
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
