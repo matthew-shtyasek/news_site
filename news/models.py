@@ -13,3 +13,5 @@ class News(models.Model):
                                      verbose_name='Дата редактирования')
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                verbose_name='Автор')
+    hidden = models.BooleanField(default=False,
+                                 blank=False)
