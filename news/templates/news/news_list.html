@@ -1,0 +1,39 @@
+{% extends 'root.html' %}
+{% load thumbnail %}
+
+{% block title %}Свежие новости{% endblock %}
+
+{% block content %}
+    <div class="news-block">
+        {% for news in news_list %}
+            <div class="news-item">
+
+                <div class="news-item-logo">
+                    {% thumbnail news.image "75x75" as im %}
+                        <img src="{{ im.url }}">
+                    {% endthumbnail %}
+                </div>
+
+                <div class="news-item-body">
+                    <h4>{{ news.title }}</h4>
+
+                    <div class="news-item-content">
+                        <p>{{ news.text|truncatewords:40 }}</p>
+
+                        <p>Автор: {{ news.author.username }}</p>
+                        <p>Опубликовано: {{ news.publish_date }}</p>
+
+                        {% if news.publish_date != news.edit_date %}
+                            <p>Отредактировано: {{ news.edit_date }}</p>
+                        {% else %}
+                    </div>
+                </div>
+
+            </div>
+        {% empty %}
+            <div class="empty-news">
+                <h3>Вы ошиблись сайтом, здесь нет новостей</h3>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
