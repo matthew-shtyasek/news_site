@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from taggit.managers import TaggableManager
@@ -16,6 +17,8 @@ class News(models.Model):
                                verbose_name='Автор')
     hidden = models.BooleanField(default=False,
                                  blank=False)
+    image = models.ImageField(upload_to='%Y/%m/%d',
+                              default=f'{settings.STATIC_URL}img/not_found.jpg')
     tags = TaggableManager()
 
     def __str__(self):
