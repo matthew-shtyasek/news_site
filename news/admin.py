@@ -27,14 +27,20 @@ class NewsAdmin(admin.ModelAdmin):
         if not search_term.strip():
             return queryset, False
 
-        queryset = queryset.annotate(
+        title_queryset = queryset.annotate(
             similarity=TrigramSimilarity('title', search_term)
         ).filter(similarity__gt=0.03).order_by('-similarity')
 
-        parent_queryset, may_have_duplicates = super()\
-            .get_search_results(request, queryset, search_term)
+        authors_queryset = queryset.annotate(
+            similarity=TrigramSimilarity('author__username', search_term)
+        ).filter(similarity__gt=0.3).order_by('-similarity')
 
-        result_queryset = queryset | parent_queryset
+        text_search_vector = SearchVector('text')
+        text_queryset = queryset.annotate(
+            search=text_search_vector
+        ).filter(search=search_term)
+
+        result_queryset = title_queryset | authors_queryset | text_queryset
         result_queryset = result_queryset.distinct()
 
         return result_queryset, False

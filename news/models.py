@@ -15,3 +15,17 @@ class News(models.Model):
                                verbose_name='Автор')
     hidden = models.BooleanField(default=False,
                                  blank=False)
+
+    def __str__(self):
+        sliced_title = self.title[:30]
+        return sliced_title if len(sliced_title) == len(self.title)\
+            else sliced_title + '...'
+    '''
+        Если длина сокращённого заголовка (len(sliced_title)) равна
+        длине исходного заголовка (len(self.title)), то мы просто
+        возращаем сокращённый заголовок (он будет совпадать с оригинальным,
+        поэтому можем вернуть как self.title, так и sliced_title, как
+        показано выше).
+        В противном случае, когда заголовок всё-таки сократили, 
+        мы добавляем к нему многоточие (sliced_title + '...')
+    '''
