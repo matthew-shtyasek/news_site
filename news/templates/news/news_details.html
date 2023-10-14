@@ -1,0 +1,22 @@
+{% extends 'root.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}Новость{% endblock %}
+
+{% block content %}
+    <div class="news">
+        <h3>{{ news.title }}</h3>
+        {% thumbnail news.img "100x150" crop="center" as im %}
+            <img src="{{ im.url }}" alt="">
+        {% empty %}
+            <img src="{% static 'img/default_news.jpg' %}" alt="Картинка по умолчанию">
+        {% endthumbnail %}
+        <p>{{ news.text }}</p>
+        <p>Автор: {{ news.author.username }}</p>
+        <p>Опубликовано: {{ news.publish_date }}</p>
+        {% if news.publish_date != news.edit_date %}
+            <p>Отредактировано: {{ news.edit_date }}</p>
+        {% endif %}
+    </div>
+{% endblock %}
