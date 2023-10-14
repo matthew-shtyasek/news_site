@@ -1,5 +1,6 @@
 {% extends 'root.html' %}
 {% load thumbnail %}
+{% load static %}
 
 {% block title %}Свежие новости{% endblock %}
 
@@ -11,6 +12,8 @@
                 <div class="news-item-logo">
                     {% thumbnail news.image "75x75" crop='center' as im %}
                         <img src="{{ im.url }}">
+                    {% empty %}
+                        <img src="{% static 'img/default.jpg' %}" alt="Картинка по умолчанию">
                     {% endthumbnail %}
                 </div>
 

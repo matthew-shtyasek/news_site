@@ -18,7 +18,8 @@ class News(models.Model):
     hidden = models.BooleanField(default=False,
                                  blank=False)
     image = models.ImageField(upload_to='%Y/%m/%d',
-                              default=f'{settings.MEDIA_URL}defaults/not_found.jpg')
+                              blank=True,
+                              null=True)
     tags = TaggableManager()
 
     def __str__(self):
