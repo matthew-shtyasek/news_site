@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.postgres.search import SearchVector, TrigramSimilarity
 
 from news.models import News
+from news.search import news_full_text_search
 
 
 @admin.register(News)
@@ -35,24 +36,6 @@ class NewsAdmin(admin.ModelAdmin):
         return ', '.join(news.name for news in obj.tags.all())
 
     def get_search_results(self, request, queryset, search_term: str):
-        if not search_term.strip():
-            return queryset, False
+        return news_full_text_search(request, queryset, search_term)
 
-        title_queryset = queryset.annotate(
-            similarity=TrigramSimilarity('title', search_term)
-        ).filter(similarity__gt=0.03).order_by('-similarity')
-
-        authors_queryset = queryset.annotate(
-            similarity=TrigramSimilarity('author__username', search_term)
-        ).filter(similarity__gt=0.3).order_by('-similarity')
-
-        text_search_vector = SearchVector('text')
-        text_queryset = queryset.annotate(
-            search=text_search_vector
-        ).filter(search=search_term)
-
-        result_queryset = title_queryset | authors_queryset | text_queryset
-        result_queryset = result_queryset.distinct()
-
-        return result_queryset, False
 

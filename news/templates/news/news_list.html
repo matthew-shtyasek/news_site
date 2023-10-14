@@ -5,6 +5,18 @@
 {% block title %}Свежие новости{% endblock %}
 
 {% block content %}
+    <div class="search">
+        <form action="." method="get" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Поиск">
+        </form>
+        <form action="." method="post">
+            {% csrf_token %}
+            {{ sort_form.as_p }}
+            <input type="submit" value="Сортировка">
+        </form>
+    </div>
     <div class="news-block">
         {% for news in news_list %}
             <div class="news-item">

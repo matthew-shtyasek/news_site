@@ -10,8 +10,10 @@ class News(models.Model):
     text = models.TextField(blank=False,
                             verbose_name='Текст')
     publish_date = models.DateTimeField(auto_now_add=True,
+                                        db_index=True,
                                         verbose_name='Дата публикации')
     edit_date = models.DateTimeField(auto_now=True,
+                                     db_index=True,
                                      verbose_name='Дата редактирования')
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                verbose_name='Автор')
@@ -21,6 +23,11 @@ class News(models.Model):
                               blank=True,
                               null=True)
     tags = TaggableManager()
+
+    class Meta:
+        verbose_name = 'Новость'
+        verbose_name_plural = 'Новости'
+        ordering = ('-publish_date', '-edit_date')
 
     def __str__(self):
         sliced_title = self.title[:30].rstrip()
@@ -35,7 +42,3 @@ class News(models.Model):
         В противном случае, когда заголовок всё-таки сократили, 
         мы добавляем к нему многоточие (sliced_title + '...')
     '''
-
-    class Meta:
-        verbose_name = 'Новость'
-        verbose_name_plural = 'Новости'
