@@ -7,10 +7,14 @@
 {% block content %}
     <div class="news">
         <h3>{{ news.title }}</h3>
-        {% thumbnail news.img "100x150" crop="center" as im %}
+        {% thumbnail news.image "100x150" crop="center" as im %}
             <img src="{{ im.url }}" alt="">
         {% empty %}
-            <img src="{% static 'img/default_news.jpg' %}" alt="Картинка по умолчанию">
+            <img src="{% static 'news/img/defaults/default.jpg' %}"
+                 width="100"
+                 height="150"
+                 
+                 alt="Картинка по умолчанию">
         {% endthumbnail %}
         <p>{{ news.text }}</p>
         <p>Автор: {{ news.author.username }}</p>
