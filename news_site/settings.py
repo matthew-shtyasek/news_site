@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.urls import reverse_lazy
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'taggit.apps.TaggitAppConfig',
     'sorl.thumbnail',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +143,6 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = reverse_lazy('accounts:sign-in')
+LOGIN_REDIRECT_URL = reverse_lazy('news:news_list')

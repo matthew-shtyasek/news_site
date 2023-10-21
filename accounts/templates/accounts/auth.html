@@ -1,0 +1,11 @@
+{% extends 'root.html' %}
+
+{% block content %}
+    <div class="auth-form form">
+        <form action="." method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="{{ submit_text }}">
+        </form>
+    </div>
+{% endblock %}
