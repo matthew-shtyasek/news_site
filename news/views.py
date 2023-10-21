@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import User, PermissionsMixin
 from django.forms import Form
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -70,9 +71,11 @@ class NewsListView(ListView):
         return self.get(request, *args, **kwargs)
 
 
-class NewsCreateView(CreateView):
+class NewsCreateView(PermissionRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'news/news_create.html'
+    permission_required = ['news.add_choice']
+    permission_denied_message = 'У вас нет доступа!'
 
     def form_valid(self, form):
         cd = form.cleaned_data
