@@ -12,3 +12,4 @@ class SortForm(forms.Form):
                        ('z-a', 'От Я до А'))
 
     sort_field = forms.ChoiceField(choices=SORTING_CHOICES)
+    current_tag = forms.CharField(widget=forms.HiddenInput, required=False)

@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import DetailView
 
 from news.models import News
-from news.views import NewsListView, TagNewsListView
+from news.views import NewsListView
 
 app_name = 'news'
 

@@ -13,11 +13,18 @@ class NewsListView(ListView):
     context_object_name = 'news_list'
     extra_context = {'form': SearchForm()}
 
+    def get_current_tag(self):
+        if self.request.method == 'GET':
+            return self.request.GET.get('tag', '')
+        return self.request.POST.get('current_tag', '')
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['sort_form'] = SortForm(
             initial={'sort_field':
-                         self.request.session.get('current_sorting', 'n2o')})
+                         self.request.session.get('current_sorting', 'n2o'),
+                     'current_tag':
+                         self.get_current_tag()})
         return context
 
     def get_queryset(self):
@@ -28,7 +35,8 @@ class NewsListView(ListView):
 
         queryset = super().get_queryset()
 
-        tag = self.request.GET.get('tag', '')
+        tag = self.get_current_tag()
+
         if tag:
             queryset = queryset.filter(tags__slug=tag)
 
@@ -58,17 +66,3 @@ class NewsListView(ListView):
             request.session.save()
 
         return self.get(request, *args, **kwargs)
-
-
-class TagNewsListView(ListView):
-    model = News
-    template_name = 'news/news_list.html'
-    context_object_name = 'news_list'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        tag = self.kwargs.get('slug', '')
-        if len(tag):
-            context[self.context_object_name] = context[self.context_object_name]\
-                .filter(tags__slug=tag)
-        return context
