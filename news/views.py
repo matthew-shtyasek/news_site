@@ -1,8 +1,10 @@
+from django.contrib.auth.models import User
 from django.forms import Form
-from django.shortcuts import render
-from django.views.generic import ListView, FormView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.views.generic import ListView, FormView, CreateView
 
-from news.forms import SearchForm, SortForm
+from news.forms import SearchForm, SortForm, NewsForm
 from news.models import News
 from news.search import news_full_text_search
 
@@ -66,3 +68,18 @@ class NewsListView(ListView):
             request.session.save()
 
         return self.get(request, *args, **kwargs)
+
+
+class NewsCreateView(CreateView):
+    form_class = NewsForm
+    template_name = 'news/news_create.html'
+
+    def form_valid(self, form):
+        cd = form.cleaned_data
+        news = form.save(commit=False)
+        news.author = self.request.user
+        news.save()
+        news.tags.add(*cd['tags'])
+        news.save()
+        return redirect(reverse('news:news_list'))
+

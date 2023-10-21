@@ -1,8 +1,9 @@
 from django.urls import path
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView
 
+from news.forms import NewsForm
 from news.models import News
-from news.views import NewsListView
+from news.views import NewsListView, NewsCreateView
 
 app_name = 'news'
 
@@ -12,5 +13,6 @@ urlpatterns = [
          DetailView.as_view(model=News,
                             template_name='news/news_details.html',
                             context_object_name='news'),
-         name='details')
+         name='details'),
+    path('create/', NewsCreateView.as_view())
 ]
