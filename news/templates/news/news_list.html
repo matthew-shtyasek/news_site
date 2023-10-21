@@ -1,6 +1,7 @@
 {% extends 'root.html' %}
 {% load thumbnail %}
 {% load static %}
+{% load remove_symbols %}
 
 {% block title %}Свежие новости{% endblock %}
 
@@ -35,8 +36,15 @@
                     </a>
 
                     <div class="news-item-content">
-                        <p>{{ news.text|truncatewords:40 }}</p>
-
+                        {% with news.text|truncatechars:200 as news_text %}
+                            <p>
+                            {% if news_text|length == news.text|length %}
+                                {{ news.text }}
+                            {% else %}
+                                {{ news_text|clear_end_text|truncatewords }}...
+                            {% endif %}
+                            </p>
+                        {% endwith %}
                         <p>Автор: {{ news.author.username }}</p>
                         <p>Опубликовано: {{ news.publish_date }}</p>
 

@@ -5,6 +5,9 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+    <div class="header">
+        <a href="{% url 'news:news_list' %}"><h2>Новости</h2></a>
+    </div>
     <div class="content">
         {% block content %}
         {% endblock %}
