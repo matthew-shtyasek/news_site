@@ -35,13 +35,19 @@
                         <h4>{{ news.title }}</h4>
                     </a>
 
+                    <p>
+                        {% for tag in news.tags.all %}
+                            <a href="{% url 'news:news_list'%}?tag={{ tag.slug }}">{{ tag.name }}</a>
+                        {% endfor %}
+                    </p>
+
                     <div class="news-item-content">
                         {% with news.text|truncatechars:200 as news_text %}
                             <p>
                             {% if news_text|length == news.text|length %}
                                 {{ news.text }}
                             {% else %}
-                                {{ news_text|clear_end_text|truncatewords }}...
+                                {{ news_text|clear_end_text }}...
                             {% endif %}
                             </p>
                         {% endwith %}

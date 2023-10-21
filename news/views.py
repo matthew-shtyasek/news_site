@@ -28,6 +28,10 @@ class NewsListView(ListView):
 
         queryset = super().get_queryset()
 
+        tag = self.request.GET.get('tag', '')
+        if tag:
+            queryset = queryset.filter(tags__slug=tag)
+
         if self.request.session.get('is_sort_changed', ''):
             search_term = self.request.session.get('search_term', '')
             self.request.session['is_sort_changed'] = False
@@ -54,3 +58,17 @@ class NewsListView(ListView):
             request.session.save()
 
         return self.get(request, *args, **kwargs)
+
+
+class TagNewsListView(ListView):
+    model = News
+    template_name = 'news/news_list.html'
+    context_object_name = 'news_list'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        tag = self.kwargs.get('slug', '')
+        if len(tag):
+            context[self.context_object_name] = context[self.context_object_name]\
+                .filter(tags__slug=tag)
+        return context
