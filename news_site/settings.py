@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'taggit.apps.TaggitAppConfig',
     'sorl.thumbnail',
     'accounts.apps.AccountsConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

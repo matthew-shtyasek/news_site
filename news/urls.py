@@ -1,6 +1,7 @@
 from django.urls import path
 from django.views.generic import DetailView, CreateView
 
+from news.api_views import NewsDetailApiView, NewsListApiView
 from news.forms import NewsForm
 from news.models import News
 from news.views import NewsListView, NewsCreateView, NewsEditView
@@ -16,4 +17,7 @@ urlpatterns = [
          name='details'),
     path('create/', NewsCreateView.as_view()),
     path('edit/<int:pk>/', NewsEditView.as_view(), name='edit'),
+
+    path('api-news/<int:id>/', NewsDetailApiView.as_view()),
+    path('api-news-list/', NewsListApiView.as_view())
 ]
