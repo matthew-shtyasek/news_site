@@ -3,7 +3,7 @@ from django.views.generic import DetailView, CreateView
 
 from news.forms import NewsForm
 from news.models import News
-from news.views import NewsListView, NewsCreateView
+from news.views import NewsListView, NewsCreateView, NewsEditView
 
 app_name = 'news'
 
@@ -14,5 +14,6 @@ urlpatterns = [
                             template_name='news/news_details.html',
                             context_object_name='news'),
          name='details'),
-    path('create/', NewsCreateView.as_view())
+    path('create/', NewsCreateView.as_view()),
+    path('edit/<int:pk>/', NewsEditView.as_view(), name='edit'),
 ]

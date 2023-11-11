@@ -24,3 +24,8 @@ class NewsForm(forms.ModelForm):
                    'publish_date',
                    'edit_date',
                    'author']
+
+
+class NewsEditForm(NewsForm):
+    image_changed = forms.CharField(initial=False,
+                                    widget=forms.HiddenInput({'class': 'image-changed'}))

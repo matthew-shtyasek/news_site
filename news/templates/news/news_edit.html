@@ -1,0 +1,37 @@
+{% extends 'root.html' %}
+
+{% block js %}
+    <script>
+        function boolToString(boolValue) {
+            let value = boolValue.toString();
+            return value.charAt(0).toUpperCase() + value.slice(1);
+        }
+
+        $(document).ready(() => {
+            let checkboxClear = $('#image-clear_id');
+            let changeButton = $('#id_image');
+            let imageChanged = $('#id_image_changed');
+
+            checkboxClear.change((e) => {
+                let isImageCleared = e.target.checked;
+
+                imageChanged.val(boolToString(isImageCleared));
+                //console.log(isImageCleared);
+            });
+
+            changeButton.change((e) => {
+                imageChanged.val('True');
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="create-form form">
+        <form action="." method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Изменить">
+        </form>
+    </div>
+{% endblock %}

@@ -3,9 +3,11 @@ from django.contrib.auth.models import User, PermissionsMixin
 from django.forms import Form
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views import View
 from django.views.generic import ListView, FormView, CreateView
+from taggit.managers import TaggableManager
 
-from news.forms import SearchForm, SortForm, NewsForm
+from news.forms import SearchForm, SortForm, NewsForm, NewsEditForm
 from news.models import News
 from news.search import news_full_text_search
 
@@ -86,3 +88,57 @@ class NewsCreateView(PermissionRequiredMixin, CreateView):
         news.save()
         return redirect(reverse('news:news_list'))
 
+
+class NewsEditView(PermissionRequiredMixin, View):
+    model = News
+    form_class = NewsEditForm
+    permission_required = ['news.change_news']
+    permission_denied_message = 'У вас нет доступа'
+    template_name = 'news/news_edit.html'
+
+    def get_context_data(self, pk: int):
+        news = get_object_or_404(self.model, pk=pk)
+        form = self.form_class(instance=news)
+        return {'form': form}
+
+    def get(self, request, pk: int):
+        return render(request,
+                      self.template_name,
+                      self.get_context_data(pk))
+
+    def get_form(self):
+        form = self.form_class(data=self.request.POST,
+                               files=self.request.FILES)
+        return form
+
+    def form_valid(self, form, pk):
+        cd = form.cleaned_data
+
+        new_news: News = form.save(commit=False)
+        old_news: News = get_object_or_404(self.model, pk=pk)
+        new_news.author = old_news.author
+        new_news.id = old_news.id
+        new_news.publish_date = old_news.publish_date
+
+        new_news.tags.remove(*old_news.tags.all())
+        new_news.tags.add(*cd['tags'])
+
+        if cd['image_changed'] == 'False':
+            new_news.image = old_news.image
+
+        new_news.save()
+
+        return redirect(reverse('news:news_list'))
+
+    def form_invalid(self, form):
+        return render(self.request,
+                      self.template_name,
+                      {'form': form})
+
+    def post(self, request, pk):
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form, pk)
+        else:
+            return self.form_invalid(form)

@@ -41,6 +41,12 @@
                         {% endfor %}
                     </p>
 
+                    {% if perms.news.change_news %}
+                        <a href="{% url 'news:edit' news.id %}">
+                            Редактировать
+                        </a>
+                    {% endif %}
+
                     <div class="news-item-content">
                         {% with news.text|truncatechars:200 as news_text %}
                             <p>
